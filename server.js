@@ -4,7 +4,15 @@ const http = require('http');
 const WebSocket = require('ws');
 
 const PORT = process.env.PORT || process.argv[2] || 3000;
-const app = express().use(express.static(path.join(__dirname, 'build')));
+const app = express()
+  .use('/', express.static(path.join(__dirname, 'build')))
+  .use('/*.*', (req, res) => {
+    res.status(404).send('404 Not found');
+  })
+  .use('/**', (req, res) => {
+    req.url = 'index.html';
+    app.handle(req, res);
+  });
 
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
