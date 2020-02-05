@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { connect } from '../../infrastructure/ws';
 
 const knownSizes = {
-  three: ['S', 'M', 'L'],
-  five: ['S', 'S+', 'M', 'M+', 'L'],
+  three: ['Small', 'Medium', 'Large'],
+  five: ['Small', 'Small +', 'Medium', 'Medium +', 'Large'],
 };
 const colors = [
   ['#022F40', 'linear-gradient(180deg, rgba(163,179,185,1) 0%, rgba(255,255,255,1) 85%)'],

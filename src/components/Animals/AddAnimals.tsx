@@ -15,7 +15,7 @@ const knownAnimals = [
   { name: 'Crocodile', added: false },
   { name: 'Cat', added: false },
   { name: 'Dog', added: false },
-  { name: 'Rat', added: false },
+  { name: 'Puma', added: false },
   { name: 'Chicken', added: false },
   { name: 'Kangaroo', added: false },
   { name: 'Snake', added: false },
@@ -24,6 +24,7 @@ const knownAnimals = [
 
 const AddAnimals = () => {
   const [animals, setAnimals] = useState<AnimalToAdd[]>([] as AnimalToAdd[]);
+  const [customAnimal, setCustomAnimal] = useState('');
   const [ws, setWs] = useState<WebSocket | undefined>();
 
   const onOpen = (ws: WebSocket) => {
@@ -48,6 +49,16 @@ const AddAnimals = () => {
     setAnimals([...animals]);
   };
 
+  const addCustomAnimal = () => {
+    if (!ws || !customAnimal) {
+      return;
+    }
+
+    console.log('Adding custom', customAnimal);
+    ws.send(JSON.stringify({ type: 'animal', body: customAnimal }));
+    setCustomAnimal('');
+  };
+
   const setCages = (howMany: string) => {
     if (!ws) {
       return;
@@ -67,8 +78,13 @@ const AddAnimals = () => {
         ))}
       </AnimalList>
       <Buttons>
-        <button onClick={() => setCages('three')}>3 sizes</button>
-        <button onClick={() => setCages('five')}>5 sizes</button>
+        <div>
+          <label>Custom: </label>
+          <input value={customAnimal} onChange={event => setCustomAnimal(event.target.value)} />
+          <button onClick={() => addCustomAnimal()}>Add</button>
+        </div>
+        <button onClick={() => setCages('three')}>3 cages</button>
+        <button onClick={() => setCages('five')}>5 cages</button>
       </Buttons>
     </div>
   );
@@ -104,9 +120,16 @@ const Animal = styled.div`
 const Buttons = styled.div`
   display: flex;
   justify-content: center;
+  padding-top: 20px;
+  font-size: 20px;
+
+  input {
+    font-size: 20px;
+    margin: 0 5px;
+  }
 
   button {
     font-size: 20px;
-    margin: 20px;
+    margin: 0 20px;
   }
 `;
