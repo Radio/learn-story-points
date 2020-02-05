@@ -8,7 +8,8 @@ const Animals = () => {
   let timeout = 250;
 
   const connect = () => {
-    let ws = new WebSocket('ws://' + window.location.host);
+    let wsUrl = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
+    let ws = new WebSocket(wsUrl);
     let connectInterval: any;
 
     // websocket onopen event listener
