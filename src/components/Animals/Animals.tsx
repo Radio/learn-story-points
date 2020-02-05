@@ -1,73 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import Animal from './Animal';
+import { connect, Message } from '../../infrastructure/ws';
+import styled from 'styled-components';
 
 const Animals = () => {
-  const [animals, setAnimals] = useState<String[]>(['Giraffe']);
-  const [ws, setWs] = useState<WebSocket | undefined>();
+  const [animals, setAnimals] = useState<string[]>([]);
 
-  let timeout = 250;
-
-  const connect = () => {
-    let wsUrl = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
-    let ws = new WebSocket(wsUrl);
-    let connectInterval: any;
-
-    // websocket onopen event listener
-    ws.onopen = () => {
-      console.log('connected websocket main component');
-
-      setWs(ws);
-
-      ws.send("Here's some text that the server is urgently awaiting!");
-
-      timeout = 250; // reset timer to 250 on open of websocket connection
-      clearTimeout(connectInterval); // clear Interval on on open of websocket connection
-    };
-
-    // websocket onclose event listener
-    ws.onclose = e => {
-      console.log(
-        `Socket is closed. Reconnect will be attempted in ${Math.min(
-          10000 / 1000,
-          (timeout + timeout) / 1000
-        )} second.`,
-        e.reason
-      );
-
-      timeout = timeout + timeout; //increment retry interval
-      connectInterval = setTimeout(check, Math.min(10000, timeout)); //call check function after timeout
-    };
-
-    // websocket onerror event listener
-    ws.onerror = (err: Event) => {
-      console.error('Socket encountered error', err, 'Closing socket');
-
-      ws.close();
-    };
-
-    ws.onmessage = (event: MessageEvent) => {
-      console.log(event.data);
-    };
-  };
-
-  const check = () => {
-    //check if websocket instance is closed, if so call `connect` function.
-    if (!ws || ws.readyState === WebSocket.CLOSED) {
-      connect();
+  const onMessage = (message: Message) => {
+    if (message.type === 'animal') {
+      setAnimals(oldAnimals => [...oldAnimals, message.body]);
     }
   };
 
   useEffect(() => {
-    connect();
+    connect(() => {}, onMessage);
   }, []);
 
   return (
-    <div>
-      {animals.map((animal: String, index: number) => (
+    <AnimalsContainer>
+      {animals.map((animal: string, index: number) => (
         <Animal key={index} name={animal} />
       ))}
-    </div>
+    </AnimalsContainer>
   );
 };
 
 export default Animals;
+
+const AnimalsContainer = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+`;

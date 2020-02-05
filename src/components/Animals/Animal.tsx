@@ -4,14 +4,21 @@ import styled from 'styled-components';
 
 export interface AnimalProps {
   name: String;
+  x?: number;
+  y?: number;
 }
 
-const Animal = ({ name }: AnimalProps) => {
+const animalHeight = 100;
+const animalWidth = 180;
+
+const Animal = ({ name, x, y }: AnimalProps) => {
+  x = x || window.innerWidth / 2 - animalWidth / 2;
+  y = y || window.innerHeight - animalHeight - 50;
   const dragHandlers = {
-    onStart: () => {},
-    onStop: () => {},
-    defaultPosition: { x: 750, y: 500 },
+    defaultPosition: { x, y },
   };
+
+  console.log(name, x, y);
 
   return (
     <Draggable {...dragHandlers}>
@@ -23,13 +30,14 @@ const Animal = ({ name }: AnimalProps) => {
 export default Animal;
 
 const AnimalDiv = styled.div`
-  width: 180px;
-  height: 180px;
+  line-height: 100px;
+  position: absolute;
+  width: ${animalWidth}px;
+  height: ${animalHeight}px;
   text-align: center;
-  padding: 10px;
   border: 1px solid #999;
   background: #fff;
-  border-radius: 3px;
   cursor: grab;
   font-size: 30px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
 `;

@@ -3,7 +3,7 @@ const path = require('path');
 const http = require('http');
 const WebSocket = require('ws');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || process.argv[2] || 3000;
 const app = express().use(express.static(path.join(__dirname, 'build')));
 
 const server = http.createServer(app);
@@ -15,7 +15,7 @@ wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(data) {
     console.log(data);
     wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
         console.log('sending back:', data);
         client.send(data);
       }
