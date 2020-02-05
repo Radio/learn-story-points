@@ -8,7 +8,8 @@
     "react-draggable": "^4.2.0",
     "styled-components": "^5.0.1",
     "react-scripts": "3.3.1",
-    "ws": "^7.2.1"
+    "ws": "^7.2.1",
+    "typescript": "~3.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -39,7 +40,6 @@
     "@types/styled-components": "^4.4.2",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1",
-    "typescript": "~3.7.2"
+    "prettier": "^1.19.1"
   }
 }
