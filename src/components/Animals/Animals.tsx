@@ -8,7 +8,7 @@ const Animals = () => {
   let timeout = 250;
 
   const connect = () => {
-    let ws = new WebSocket('ws://localhost:3030');
+    let ws = new WebSocket('ws://' + window.location.host);
     let connectInterval: any;
 
     // websocket onopen event listener
@@ -56,9 +56,9 @@ const Animals = () => {
     }
   };
 
-  // useEffect(() => {
-  //   connect();
-  // }, []);
+  useEffect(() => {
+    connect();
+  }, []);
 
   return (
     <div>
