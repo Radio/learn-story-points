@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Draggable from 'react-draggable';
-import styled from 'styled-components';
+import Animal from './Animal';
 
 const Animals = () => {
   const [animals, setAnimals] = useState<String[]>(['Giraffe']);
@@ -61,33 +60,13 @@ const Animals = () => {
   //   connect();
   // }, []);
 
-  const dragHandlers = {
-    onStart: () => {},
-    onStop: () => {},
-    defaultPosition: { x: 750, y: 500 },
-  };
-
   return (
     <div>
       {animals.map((animal: String, index: number) => (
-        <Draggable key={index} {...dragHandlers}>
-          <Animal className="animal">{animal}</Animal>
-        </Draggable>
+        <Animal key={index} name={animal} />
       ))}
     </div>
   );
 };
 
 export default Animals;
-
-const Animal = styled.div`
-  width: 180px;
-  height: 180px;
-  text-align: center;
-  padding: 10px;
-  border: 1px solid #999;
-  background: #fff;
-  border-radius: 3px;
-  cursor: grab;
-  font-size: 30px;
-`;
