@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect, Message } from '../../infrastructure/ws';
+import { connect } from '../../infrastructure/ws';
 import styled from 'styled-components';
 
 export interface AnimalToAdd {
@@ -8,18 +8,24 @@ export interface AnimalToAdd {
 }
 
 const knownAnimals = [
-  { name: 'Giraffe', added: false },
-  { name: 'Horse', added: false },
-  { name: 'Mouse', added: false },
-  { name: 'Elephant', added: false },
+  { name: 'Camel', added: false },
   { name: 'Crocodile', added: false },
-  { name: 'Cat', added: false },
-  { name: 'Dog', added: false },
-  { name: 'Puma', added: false },
-  { name: 'Chicken', added: false },
+  { name: 'Elephant', added: false },
+  { name: 'Fox', added: false },
+  { name: 'Giraffe', added: false },
+  { name: 'Hippopotamus', added: false },
   { name: 'Kangaroo', added: false },
-  { name: 'Snake', added: false },
+  { name: 'Koala', added: false },
   { name: 'Lion', added: false },
+  { name: 'Meerkat', added: false },
+  { name: 'Monkey', added: false },
+  { name: 'Owl', added: false },
+  { name: 'Polar bear', added: false },
+  { name: 'Rabbit', added: false },
+  { name: 'Rhino', added: false },
+  { name: 'Sloth', added: false },
+  { name: 'Squirrel', added: false },
+  { name: 'Zebra', added: false },
 ];
 
 const AddAnimals = () => {
@@ -72,9 +78,12 @@ const AddAnimals = () => {
     <div>
       <AnimalList>
         {animals.map((animal: AnimalToAdd) => (
-          <Animal key={animal.name} className={animal.added ? 'added' : 'not-added'} onClick={() => addAnimal(animal)}>
-            {animal.name}
-          </Animal>
+          <Animal
+            key={animal.name}
+            className={animal.added ? 'added' : 'not-added'}
+            onClick={() => addAnimal(animal)}
+            bgImage={'/images/animals/' + animal.name.toLowerCase().replace(' ', '-') + '.svg'}
+          />
         ))}
       </AnimalList>
       <Buttons>
@@ -100,19 +109,23 @@ const AnimalList = styled.div`
   justify-content: flex-start;
 `;
 
-const Animal = styled.div`
+const Animal = styled.div<{ bgImage: string }>`
   width: 180px;
   height: 180px;
   line-height: 180px;
   text-align: center;
   margin: 20px;
   border: 1px solid #999;
-  background: #fff;
+  background-color: #fff;
+  background-position: center center;
+  background-image: url(${props => props.bgImage});
+  background-repeat: no-repeat;
+  background-size: 85%;
   cursor: pointer;
   font-size: 30px;
 
   &.added {
-    opacity: 0.5;
+    opacity: 0.1;
   }
 `;
 
