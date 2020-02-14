@@ -1,6 +1,7 @@
 import React from 'react';
-import Animals from './Animals';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import Animals from './Animals';
+import Tasks from './Tasks';
 
 const App = () => {
   return (
@@ -9,14 +10,17 @@ const App = () => {
         <Route path="/animals">
           <Animals />
         </Route>
+        <Route path="/tasks">
+          <Tasks />
+        </Route>
         <Route path="/">
           <nav>
             <ul>
               <li>
-                <Link to="/">Home</Link>
+                <Link to="/animals">Animals</Link>
               </li>
               <li>
-                <Link to="/animals">Animals</Link>
+                <Link to="/tasks">Tasks</Link>
               </li>
             </ul>
           </nav>
