@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Animals from './Animals';
 import Tasks from './Tasks';
+import styled from 'styled-components';
 
 const App = () => {
   return (
@@ -15,14 +16,18 @@ const App = () => {
         </Route>
         <Route path="/">
           <nav>
-            <ul>
+            <Navigation>
               <li>
-                <Link to="/animals">Animals</Link>
+                <Link to="/animals" style={{ color: '#f06fff' }}>
+                  Animals
+                </Link>
               </li>
               <li>
-                <Link to="/tasks">Tasks</Link>
+                <Link to="/tasks" style={{ color: '#6f9aff' }}>
+                  Tasks
+                </Link>
               </li>
-            </ul>
+            </Navigation>
           </nav>
         </Route>
       </Switch>
@@ -31,3 +36,20 @@ const App = () => {
 };
 
 export default App;
+
+const Navigation = styled.ul`
+  padding-top: 200px;
+  display: flex;
+  justify-content: center;
+
+  & > li {
+    margin: 0 10px;
+    background: #eee;
+    list-style-type: none;
+
+    & > a {
+      display: block;
+      padding: 30px;
+    }
+  }
+`;

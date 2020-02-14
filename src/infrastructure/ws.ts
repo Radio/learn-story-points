@@ -8,12 +8,20 @@ export interface OnMessage {
 
 export interface Message {
   type: string;
-  body: string;
+  body: any;
+}
+
+export interface CloseConnection {
+  (): void;
+}
+
+export interface Connection {
+  close: CloseConnection;
 }
 
 let timeout = 250;
 
-export const connect = (onOpen: OnOpen, onMessage?: OnMessage) => {
+export const connect = (onOpen: OnOpen, onMessage?: OnMessage): Connection => {
   let wsUrl =
     process.env.NODE_ENV === 'development'
       ? 'ws://localhost:3030'
@@ -30,7 +38,7 @@ export const connect = (onOpen: OnOpen, onMessage?: OnMessage) => {
 
   // websocket onopen event listener
   ws.onopen = () => {
-    console.log('connected websocket main component');
+    console.log('Connected to a websocket');
 
     onOpen(ws);
 
@@ -61,4 +69,11 @@ export const connect = (onOpen: OnOpen, onMessage?: OnMessage) => {
       onMessage(JSON.parse(event.data));
     };
   }
+
+  return {
+    close: () => {
+      console.log('Closing the websocket connection');
+      ws.close();
+    },
+  };
 };

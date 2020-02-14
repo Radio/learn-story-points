@@ -16,9 +16,8 @@ const Animals = () => {
     });
   };
 
-  const onMessage = (message: Message) => message.type === 'animal' && addNewAnimal(message.body);
-
   useEffect(() => {
+    const onMessage = (message: Message) => message.type === 'animal' && addNewAnimal(message.body);
     connect(() => {}, onMessage);
   }, []);
 

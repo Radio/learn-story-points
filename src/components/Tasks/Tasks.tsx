@@ -6,6 +6,7 @@ import arrayMove from 'array-move';
 
 export interface Task {
   name: string;
+  image?: string;
   new?: boolean;
 }
 
@@ -20,6 +21,7 @@ interface SortableListProps {
 
 const SortableItem = SortableElement(({ task, taskPosition }: SortableItemProps) => (
   <TaskDiv className={task.new ? 'new' : 'old'}>
+    {task.image ? <img src={'/images/tasks/' + task.image} width="90%" alt="" /> : ''}
     <p>{task.name}</p>
     <span className="task-position">{taskPosition}</span>
   </TaskDiv>
@@ -36,56 +38,57 @@ const SortableList = SortableContainer(({ items }: SortableListProps) => {
 });
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState<Task[]>([{ name: 'Wash windows', new: false }] as Task[]);
+  const [tasks, setTasks] = useState<Task[]>([{ name: 'Iron shirts', image: 'shirt.svg', new: false }] as Task[]);
 
-  const addNewTask = (taskName: string) => {
-    // if (typeof tasks.find(task => task.name === taskName) !== 'undefined') {
-    //   return;
-    // }
-    // setTasks(oldTasks => [...oldTasks, { name: taskName, new: true }]);
-
+  const addNewTask = (taskName: string, taskImage?: string) => {
     setTasks(oldTasks => {
-      if (typeof oldTasks.find(task => task.name === taskName) !== 'undefined') {
+      if (oldTasks.findIndex(task => task.name === taskName) >= 0) {
         return oldTasks;
       }
 
-      return [...oldTasks, { name: taskName, new: true }];
+      return [...oldTasks, { name: taskName, image: taskImage, new: true }];
     });
   };
 
-  const onMessage = (message: Message) => message.type === 'task' && addNewTask(message.body);
-
   useEffect(() => {
+    const onMessage = (message: Message) =>
+      message.type === 'task' && addNewTask(message.body.name, message.body.image);
     connect(() => {}, onMessage);
-  }, [onMessage]);
+  }, []);
 
   const onSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
     setTasks(oldTasks => {
       oldTasks[oldIndex].new = false;
+
       return arrayMove(oldTasks, oldIndex, newIndex);
     });
   };
 
   return (
-    <div>
+    <Desk>
       <SortableList axis="x" items={tasks} onSortEnd={onSortEnd} />
-    </div>
+    </Desk>
   );
 };
 
 export default Tasks;
 
+const Desk = styled.div`
+  height: 100%;
+  background: #5a4c49;
+  padding-top: 100px;
+`;
+
 const SortedTasksContainer = styled.div`
   height: 340px;
   padding: 20px 0;
-  margin-top: 100px;
   display: flex;
   justify-content: center;
 `;
 
 const TaskDiv = styled.div`
   margin: 0 5px;
-  padding: 80px 15px;
+  padding: 40px 15px;
   width: 200px;
   height: 300px;
   text-align: center;
@@ -97,7 +100,8 @@ const TaskDiv = styled.div`
   position: relative;
 
   &.new {
-    background: #c5ffa7;
+    background: #c4e3cb;
+    border-color: #8aae92;
   }
 
   & > .task-position {
@@ -106,5 +110,13 @@ const TaskDiv = styled.div`
     position: absolute;
     bottom: 5px;
     right: 10px;
+  }
+
+  & > img {
+    padding-bottom: 10px;
+  }
+
+  & > p {
+    margin: 20px 0;
   }
 `;
