@@ -45,7 +45,6 @@ export default Cages;
 const SizesContainer = styled.div`
   display: flex;
   justify-content: center;
-  // padding: 50px;
   height: 100%;
 `;
 

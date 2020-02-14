@@ -108,7 +108,6 @@ const Animal = styled.div`
   margin: 20px;
   border: 1px solid #999;
   background: #fff;
-  border-radius: 3px;
   cursor: pointer;
   font-size: 30px;
 

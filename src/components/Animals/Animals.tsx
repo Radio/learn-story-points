@@ -6,11 +6,17 @@ import styled from 'styled-components';
 const Animals = () => {
   const [animals, setAnimals] = useState<string[]>([]);
 
-  const onMessage = (message: Message) => {
-    if (message.type === 'animal') {
-      setAnimals(oldAnimals => [...oldAnimals, message.body]);
-    }
+  const addNewAnimal = (animal: string) => {
+    setAnimals(oldAnimals => {
+      if (oldAnimals.indexOf(animal) >= 0) {
+        return oldAnimals;
+      }
+
+      return [...oldAnimals, animal];
+    });
   };
+
+  const onMessage = (message: Message) => message.type === 'animal' && addNewAnimal(message.body);
 
   useEffect(() => {
     connect(() => {}, onMessage);
