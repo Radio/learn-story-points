@@ -38,7 +38,7 @@ const App = () => {
 export default App;
 
 const Navigation = styled.ul`
-  padding-top: 200px;
+  padding: 200px 0 0 0;
   display: flex;
   justify-content: center;
 
