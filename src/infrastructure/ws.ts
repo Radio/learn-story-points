@@ -13,7 +13,7 @@ export interface Message {
 
 let timeout = 250;
 
-export const connect = (onOpen: OnOpen, onMessage: OnMessage) => {
+export const connect = (onOpen: OnOpen, onMessage?: OnMessage) => {
   let wsUrl =
     process.env.NODE_ENV === 'development'
       ? 'ws://localhost:3030'
@@ -56,7 +56,9 @@ export const connect = (onOpen: OnOpen, onMessage: OnMessage) => {
     ws.close();
   };
 
-  ws.onmessage = (event: MessageEvent) => {
-    onMessage(JSON.parse(event.data));
-  };
+  if (onMessage) {
+    ws.onmessage = (event: MessageEvent) => {
+      onMessage(JSON.parse(event.data));
+    };
+  }
 };

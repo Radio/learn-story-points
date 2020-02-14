@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect, Message } from '../../infrastructure/ws';
+import { connect } from '../../infrastructure/ws';
 import styled from 'styled-components';
 
 export interface TaskToAdd {
@@ -32,10 +32,8 @@ const AddTasks = () => {
     setTasks(knownTasks);
   };
 
-  const onMessage = (message: Message) => {};
-
   useEffect(() => {
-    connect(onOpen, onMessage);
+    connect(onOpen);
   }, []);
 
   const addAnimal = (animal: TaskToAdd) => {

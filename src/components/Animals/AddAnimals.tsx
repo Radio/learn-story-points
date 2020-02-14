@@ -38,10 +38,8 @@ const AddAnimals = () => {
     setAnimals(knownAnimals);
   };
 
-  const onMessage = (message: Message) => {};
-
   useEffect(() => {
-    connect(onOpen, onMessage);
+    connect(onOpen);
   }, []);
 
   const addAnimal = (animal: AnimalToAdd) => {
