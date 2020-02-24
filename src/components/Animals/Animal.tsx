@@ -30,7 +30,6 @@ const Animal = ({ name, x, y }: AnimalProps) => {
 export default Animal;
 
 const AnimalDiv = styled.div<{ bgImage: string }>`
-  line-height: 100px;
   position: absolute;
   width: ${animalWidth}px;
   height: ${animalHeight}px;

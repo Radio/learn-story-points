@@ -1,21 +1,9 @@
 import React from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Tasks from './Tasks';
-import AddTasks from './AddTasks';
+import { UsesConnection } from '../../infrastructure/usesConnection';
 
-const Index = () => {
-  let match = useRouteMatch();
-
-  return (
-    <Switch>
-      <Route path={`${match.path}/add`}>
-        <AddTasks />
-      </Route>
-      <Route path={match.path}>
-        <Tasks />
-      </Route>
-    </Switch>
-  );
+const Index = ({ connection }: UsesConnection) => {
+  return connection && <Tasks connection={connection} />;
 };
 
 export default Index;

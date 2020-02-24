@@ -1,22 +1,14 @@
 import React from 'react';
 import Cages from './Cages';
 import Animals from './Animals';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
-import AddAnimals from './AddAnimals';
+import { UsesConnection } from '../../infrastructure/usesConnection';
 
-const Index = () => {
-  let match = useRouteMatch();
-
+const Index = ({ connection }: UsesConnection) => {
   return (
-    <Switch>
-      <Route path={`${match.path}/add`}>
-        <AddAnimals />
-      </Route>
-      <Route path={match.path}>
-        <Cages />
-        <Animals />
-      </Route>
-    </Switch>
+    <div style={{ height: '100%' }}>
+      <Cages connection={connection} />
+      <Animals connection={connection} />
+    </div>
   );
 };
 

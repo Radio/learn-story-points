@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { connect } from '../../infrastructure/ws';
+import { UsesConnection } from '../../infrastructure/usesConnection';
 
 const knownSizes = {
   three: ['Small', 'Medium', 'Large'],
@@ -14,20 +14,14 @@ const colors = [
   ['#046E8F', 'linear-gradient(180deg, rgba(163,202,214,1) 0%, rgba(255,255,255,1) 85%)'],
 ];
 
-const Cages = () => {
+const Cages = ({ connection }: UsesConnection) => {
   const [sizes, setSizes] = useState<String[]>(knownSizes.three);
 
-  const onOpen = (ws: WebSocket) => {};
-
-  const onMessage = (message: any) => {
-    if (message.type === 'cages') {
-      setSizes(message.body === 'five' ? knownSizes.five : knownSizes.three);
-    }
-  };
-
   useEffect(() => {
-    connect(onOpen, onMessage);
-  }, []);
+    connection.addListener('cages', body => {
+      setSizes(body === 'five' ? knownSizes.five : knownSizes.three);
+    });
+  }, [connection]);
 
   return (
     <SizesContainer>

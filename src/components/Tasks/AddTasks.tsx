@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from '../../infrastructure/ws';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { UsesConnection } from '../../infrastructure/usesConnection';
 
 export interface TaskToAdd {
   name: string;
@@ -23,38 +23,31 @@ const knownTasks: TaskToAdd[] = [
   { name: 'Find the remote controller', image: 'tv.svg', added: false },
 ];
 
-const AddTasks = () => {
-  const [tasks, setTasks] = useState<TaskToAdd[]>([] as TaskToAdd[]);
+const AddTasks = ({ connection }: UsesConnection) => {
+  const [tasks, setTasks] = useState<TaskToAdd[]>(knownTasks);
   const [customTask, setCustomTask] = useState('');
-  const [ws, setWs] = useState<WebSocket | undefined>();
-
-  const onOpen = (ws: WebSocket) => {
-    setWs(ws);
-    setTasks(knownTasks);
-  };
-
-  useEffect(() => {
-    connect(onOpen);
-  }, []);
 
   const addTask = (task: TaskToAdd) => {
-    if (!ws) {
-      return;
-    }
-
-    ws.send(JSON.stringify({ type: 'task', body: { name: task.name, image: task.image } }));
+    connection.send('task', { name: task.name, image: task.image });
     task.added = true;
     setTasks([...tasks]);
   };
 
   const addCustomTask = () => {
-    if (!ws || !customTask) {
+    if (!customTask) {
       return;
     }
 
-    console.log('Adding custom', customTask);
-    ws.send(JSON.stringify({ type: 'task', body: { name: customTask } }));
+    connection.send('task', { name: customTask });
     setCustomTask('');
+  };
+
+  const showEstimations = () => {
+    connection.send('estimation', true);
+  };
+
+  const hideEstimations = () => {
+    connection.send('estimation', false);
   };
 
   return (
@@ -73,6 +66,9 @@ const AddTasks = () => {
           <input value={customTask} onChange={event => setCustomTask(event.target.value)} />
           <button onClick={() => addCustomTask()}>Add</button>
         </div>
+        <button onClick={() => tasks.forEach(task => addTask(task))}>Add all</button>
+        <button onClick={() => showEstimations()}>Show Estimations</button>
+        <button onClick={() => hideEstimations()}>Hide Estimations</button>
       </Buttons>
     </div>
   );

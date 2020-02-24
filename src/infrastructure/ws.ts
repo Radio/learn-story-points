@@ -11,17 +11,29 @@ export interface Message {
   body: any;
 }
 
+export interface ListenerCallback {
+  (body: any): void;
+}
+
+export interface Listener {
+  messageType: string;
+  callback: ListenerCallback;
+}
+
 export interface CloseConnection {
   (): void;
 }
 
 export interface Connection {
+  ws: WebSocket;
+  send: (messageType: string, body: any) => void;
+  addListener: (messageType: string, callback: ListenerCallback) => void;
   close: CloseConnection;
 }
 
 let timeout = 250;
 
-export const connect = (onOpen: OnOpen, onMessage?: OnMessage): Connection => {
+export const connect = (onOpen?: OnOpen, onMessage?: OnMessage): Connection => {
   let wsUrl =
     process.env.NODE_ENV === 'development'
       ? 'ws://localhost:3030'
@@ -40,7 +52,7 @@ export const connect = (onOpen: OnOpen, onMessage?: OnMessage): Connection => {
   ws.onopen = () => {
     console.log('Connected to a websocket');
 
-    onOpen(ws);
+    onOpen && onOpen(ws);
 
     timeout = 250; // reset timer to 250 on open of websocket connection
     clearTimeout(connectInterval); // clear Interval on on open of websocket connection
@@ -64,13 +76,26 @@ export const connect = (onOpen: OnOpen, onMessage?: OnMessage): Connection => {
     ws.close();
   };
 
-  if (onMessage) {
-    ws.onmessage = (event: MessageEvent) => {
-      onMessage(JSON.parse(event.data));
-    };
-  }
+  let listeners: Listener[] = [];
+
+  ws.onmessage = (event: MessageEvent) => {
+    let message: Message = JSON.parse(event.data);
+
+    listeners
+      .filter(listener => listener.messageType === message.type)
+      .forEach(listener => listener.callback(message.body));
+
+    onMessage && onMessage(message);
+  };
 
   return {
+    ws: ws,
+    send: (messageType: string, body: any) => {
+      ws.send(JSON.stringify({ type: messageType, body }));
+    },
+    addListener: (messageType: string, callback: ListenerCallback) => {
+      listeners.push({ messageType, callback });
+    },
     close: () => {
       console.log('Closing the websocket connection');
       ws.close();

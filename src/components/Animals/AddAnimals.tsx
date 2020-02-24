@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from '../../infrastructure/ws';
 import styled from 'styled-components';
+import { UsesConnection } from '../../infrastructure/usesConnection';
 
 export interface AnimalToAdd {
   name: string;
@@ -28,48 +28,27 @@ const knownAnimals = [
   { name: 'Zebra', added: false },
 ];
 
-const AddAnimals = () => {
-  const [animals, setAnimals] = useState<AnimalToAdd[]>([] as AnimalToAdd[]);
+const AddAnimals = ({ connection }: UsesConnection) => {
+  const [animals, setAnimals] = useState<AnimalToAdd[]>(knownAnimals);
   const [customAnimal, setCustomAnimal] = useState('');
-  const [ws, setWs] = useState<WebSocket | undefined>();
-
-  const onOpen = (ws: WebSocket) => {
-    setWs(ws);
-    setAnimals(knownAnimals);
-  };
-
-  useEffect(() => {
-    connect(onOpen);
-  }, []);
 
   const addAnimal = (animal: AnimalToAdd) => {
-    if (!ws) {
-      return;
-    }
-
-    console.log('Adding', animal.name);
-    ws.send(JSON.stringify({ type: 'animal', body: animal.name }));
+    connection.send('animal', animal.name);
     animal.added = true;
     setAnimals([...animals]);
   };
 
   const addCustomAnimal = () => {
-    if (!ws || !customAnimal) {
+    if (!customAnimal) {
       return;
     }
 
-    console.log('Adding custom', customAnimal);
-    ws.send(JSON.stringify({ type: 'animal', body: customAnimal }));
+    connection.send('animal', customAnimal);
     setCustomAnimal('');
   };
 
   const setCages = (howMany: string) => {
-    if (!ws) {
-      return;
-    }
-
-    console.log('Settings cages', howMany);
-    ws.send(JSON.stringify({ type: 'cages', body: howMany }));
+    connection.send('cages', howMany);
   };
 
   return (

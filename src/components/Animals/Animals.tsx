@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Animal from './Animal';
-import { connect, Message } from '../../infrastructure/ws';
 import styled from 'styled-components';
+import { UsesConnection } from '../../infrastructure/usesConnection';
 
-const Animals = () => {
+const Animals = ({ connection }: UsesConnection) => {
   const [animals, setAnimals] = useState<string[]>([]);
 
   const addNewAnimal = (animal: string) => {
@@ -17,9 +17,8 @@ const Animals = () => {
   };
 
   useEffect(() => {
-    const onMessage = (message: Message) => message.type === 'animal' && addNewAnimal(message.body);
-    connect(() => {}, onMessage);
-  }, []);
+    connection.addListener('animal', addNewAnimal);
+  }, [connection]);
 
   return (
     <AnimalsContainer>
