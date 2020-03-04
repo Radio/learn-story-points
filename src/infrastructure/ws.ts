@@ -76,7 +76,14 @@ export const connect = (onOpen?: OnOpen, onMessage?: OnMessage): Connection => {
     ws.close();
   };
 
-  let listeners: Listener[] = [];
+  let listeners: Listener[] = [
+    {
+      messageType: 'ping',
+      callback: time => {
+        console.log('ping', time);
+      },
+    },
+  ];
 
   ws.onmessage = (event: MessageEvent) => {
     let message: Message = JSON.parse(event.data);

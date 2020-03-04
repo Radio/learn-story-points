@@ -15,18 +15,28 @@ const app = express()
   });
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const webSocketServer = new WebSocket.Server({ server });
 
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(data) {
+webSocketServer.on('connection', function connection(client) {
+  const pingInterval = setInterval(function ping() {
+    const pingPayload = { type: 'ping', body: new Date() };
+    console.log('Pinging with', pingPayload);
+    client.send(JSON.stringify(pingPayload));
+  }, 1000);
+
+  client.on('message', function incoming(data) {
     console.log(data);
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
+    webSocketServer.clients.forEach(function each(anotherClient) {
+      if (anotherClient !== client && anotherClient.readyState === WebSocket.OPEN) {
         console.log('sending back:', data);
-        client.send(data);
+        anotherClient.send(data);
       }
     });
+  });
+
+  client.on('close', function() {
+    clearInterval(pingInterval);
   });
 });

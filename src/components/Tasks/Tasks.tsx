@@ -33,6 +33,9 @@ interface SortableListProps {
 
 const SortableItem = SortableElement(({ task, taskIndex, onEstimationChanged, showEstimation }: SortableItemProps) => {
   const setEstimation = (value: number) => {
+    onEstimationChanged(taskIndex, value);
+  };
+  const setCorrectedEstimation = (value: number) => {
     onEstimationChanged(taskIndex, correctEstimation(value));
   };
 
@@ -55,6 +58,7 @@ const SortableItem = SortableElement(({ task, taskIndex, onEstimationChanged, sh
           type="text"
           value={task.estimation || ''}
           onChange={event => setEstimation(parseInt(event.target.value) || 0)}
+          onBlur={event => setCorrectedEstimation(parseInt(event.target.value) || 0)}
         />
       )}
       <TaskPosition>{taskIndex + 1}</TaskPosition>
